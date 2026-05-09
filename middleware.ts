@@ -1,7 +1,25 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { DEMO_SESSION_COOKIE, DEMO_SESSION_VALUE } from "@/lib/demo";
+
+const PUBLIC_PATHS = ["/auth/login", "/auth/callback", "/api/auth/demo-login"];
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const isPublic = PUBLIC_PATHS.some(p => pathname.startsWith(p));
+
+  // ── Demo mode: cookie-only auth ───────────────────────────────────────────
+  if (process.env.DEMO_MODE === "true") {
+    const session = request.cookies.get(DEMO_SESSION_COOKIE);
+    const authenticated = session?.value === DEMO_SESSION_VALUE;
+
+    if (!authenticated && !isPublic) {
+      return NextResponse.redirect(new URL("/auth/login", request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // ── Supabase auth ─────────────────────────────────────────────────────────
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -22,24 +40,16 @@ export async function middleware(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const { pathname } = request.nextUrl;
 
-  // Redirect unauthenticated users to login (except public paths)
-  const publicPaths = ["/auth/login", "/auth/callback"];
-  if (!user && !publicPaths.some(p => pathname.startsWith(p))) {
+  if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
     return NextResponse.redirect(url);
   }
 
-  // Protect admin routes
   if (pathname.startsWith("/admin") && user) {
     const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
+      .from("profiles").select("role").eq("id", user.id).single();
     if (profile?.role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
@@ -49,7 +59,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };

@@ -1,11 +1,10 @@
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { getServerUser } from "@/lib/auth";
 import { getProfile } from "@/lib/db/profiles";
 import Header from "@/components/layout/Header";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
   if (!user) redirect("/auth/login");
 
   const profile = await getProfile(user.id);

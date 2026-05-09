@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getServerUser } from "@/lib/auth";
 import { getArticles, getArticleCategoryCounts, getUserSaveIds } from "@/lib/db";
 import ArticleCard from "@/components/articles/ArticleCard";
 import CategoryFilter from "@/components/articles/CategoryFilter";
@@ -10,8 +10,7 @@ interface PageProps {
 
 export default async function ArticlesPage({ searchParams }: PageProps) {
   const { q, category } = await searchParams;
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
   const [articles, counts, savedIds] = await Promise.all([
     getArticles({ q, category, limit: 50 }),
@@ -21,7 +20,6 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
 
   return (
     <div>
-      {/* Page header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-8 h-8 rounded-xl bg-[#F45B69]/15 border border-[#F45B69]/30 flex items-center justify-center">
           <BookOpen size={16} className="text-[#F45B69]" />
@@ -30,8 +28,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
           <h1 className="text-white font-bold text-xl">Article Library</h1>
           <p className="text-[#6A6A6A] text-xs">
             {articles.length} article{articles.length !== 1 ? "s" : ""}
-            {q ? ` for "${q}"` : ""}
-            {category ? ` in ${category}` : ""}
+            {q ? ` for "${q}"` : ""}{category ? ` in ${category}` : ""}
           </p>
         </div>
       </div>
@@ -40,7 +37,6 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
         <aside className="hidden md:block w-56 shrink-0">
           <CategoryFilter counts={counts} activeCategory={category} />
         </aside>
-
         <div className="flex-1 min-w-0">
           <form action="/articles" className="mb-5">
             {category && <input type="hidden" name="category" value={category} />}
@@ -51,7 +47,6 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
               />
             </div>
           </form>
-
           {articles.length > 0 ? (
             <div className="space-y-3">
               {articles.map(article => (
@@ -61,9 +56,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
           ) : (
             <div className="rounded-2xl border border-dashed border-[#3A3A3A] p-12 text-center">
               <Search size={32} className="text-[#3A3A3A] mx-auto mb-3" />
-              <p className="text-[#6A6A6A] text-sm mb-1">
-                {q ? `No articles found for "${q}"` : "No articles in this category yet."}
-              </p>
+              <p className="text-[#6A6A6A] text-sm mb-1">{q ? `No articles found for "${q}"` : "No articles yet."}</p>
               <a href="/articles" className="text-[#F45B69] text-xs hover:underline">Clear filters</a>
             </div>
           )}
