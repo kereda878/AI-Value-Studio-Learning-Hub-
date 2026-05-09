@@ -12,6 +12,7 @@ export interface Profile {
 }
 
 export type ArticleStatus = "published" | "pending";
+export type ContentType = "article" | "video";
 
 export interface Article {
   id: string;
@@ -29,6 +30,7 @@ export interface Article {
   is_featured: boolean;
   read_count: number;
   status: ArticleStatus;
+  content_type: ContentType;
   suggested_by_ai: boolean;
   created_by: string | null;
   published_at: string;
@@ -80,6 +82,7 @@ export interface CreateArticleInput {
   image_url?: string;
   is_featured?: boolean;
   status?: ArticleStatus;
+  content_type?: ContentType;
   suggested_by_ai?: boolean;
 }
 

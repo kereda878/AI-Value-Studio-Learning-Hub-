@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bookmark, BookmarkCheck, Clock, Sparkles, BookOpen, ExternalLink } from "lucide-react";
+import { Bookmark, BookmarkCheck, Clock, Sparkles, BookOpen, ExternalLink, Play } from "lucide-react";
 import { useBookmark } from "@/lib/hooks/useBookmark";
 import { timeAgo, categoryColor } from "@/lib/utils";
 import type { Article } from "@/lib/types";
@@ -65,6 +65,13 @@ export default function ArticleCard({ article, userId, isSaved = false, variant 
               className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent" />
+            {article.content_type === "video" && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-full bg-black/60 border border-white/20 flex items-center justify-center group-hover:bg-[#F45B69]/80 group-hover:border-[#F45B69]/60 transition-all">
+                  <Play size={22} className="text-white ml-1" fill="white" />
+                </div>
+              </div>
+            )}
             <div className="absolute top-3 left-3 flex items-center gap-2">
               <span
                 className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border"
@@ -161,6 +168,11 @@ export default function ArticleCard({ article, userId, isSaved = false, variant 
           >
             {article.category}
           </span>
+          {article.content_type === "video" && (
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-red-500/15 text-red-400 flex items-center gap-1">
+              <Play size={8} fill="currentColor" /> Video
+            </span>
+          )}
           {article.is_featured && <Sparkles size={10} className="text-[#D4956A]" />}
         </div>
 
@@ -215,11 +227,18 @@ export default function ArticleCard({ article, userId, isSaved = false, variant 
         )}
 
         {article.image_url ? (
-          <img
-            src={article.image_url}
-            alt={article.title}
-            className="w-20 h-20 rounded-xl object-cover opacity-70 group-hover:opacity-90 transition-opacity"
-          />
+          <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0">
+            <img
+              src={article.image_url}
+              alt={article.title}
+              className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity"
+            />
+            {article.content_type === "video" && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                <Play size={14} className="text-white ml-0.5" fill="white" />
+              </div>
+            )}
+          </div>
         ) : (
           <div
             className="w-20 h-20 rounded-xl flex items-center justify-center border"

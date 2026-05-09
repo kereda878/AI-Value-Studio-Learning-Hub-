@@ -65,7 +65,7 @@ export async function createArticle(input: CreateArticleInput, createdBy: string
       category: input.category ?? null, tags: input.tags ?? [], source: input.source ?? null,
       author: input.author ?? null, image_url: input.image_url ?? null,
       is_featured: input.is_featured ?? false, read_count: 0, ai_tags: [],
-      status: "published" as const, suggested_by_ai: false,
+      status: "published" as const, content_type: "article" as const, suggested_by_ai: false,
       created_by: createdBy, published_at: new Date().toISOString(), created_at: new Date().toISOString(),
     };
   }
@@ -99,7 +99,7 @@ export async function addToPendingQueue(input: CreateArticleInput, createdBy: st
     category: input.category ?? null, tags: input.tags ?? [], source: input.source ?? null,
     author: input.author ?? null, image_url: input.image_url ?? null,
     is_featured: false, read_count: 0, ai_tags: [],
-    status: "pending", suggested_by_ai: input.suggested_by_ai ?? false,
+    status: "pending", content_type: input.content_type ?? "article", suggested_by_ai: input.suggested_by_ai ?? false,
     created_by: createdBy, published_at: new Date().toISOString(), created_at: new Date().toISOString(),
   };
   if (isDemoMode()) {
