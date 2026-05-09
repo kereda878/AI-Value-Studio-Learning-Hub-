@@ -20,15 +20,21 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body {
-  background: #0D0D0D;
+  background: #111111;
   color: #F0F0F0;
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Safari backdrop-filter fix */
+.header-blur {
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: #0D0D0D; }
+::-webkit-scrollbar-track { background: #111111; }
 ::-webkit-scrollbar-thumb { background: #2E2E2E; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #3A3A3A; }
 

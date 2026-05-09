@@ -40,7 +40,7 @@ export default function Header({ profile }: { profile: Profile | null }) {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0D0D0D]/90 backdrop-blur-xl border-b border-white/[0.06]">
+    <header className="sticky top-0 z-50 bg-[#111111]/95 header-blur border-b border-white/[0.07]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center gap-4 h-16">
 
