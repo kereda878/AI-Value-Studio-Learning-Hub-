@@ -1,7 +1,10 @@
 import { createClient, createServiceClient } from "@/lib/supabase/server";
-import { isDemoMode, DEMO_ARTICLES } from "@/lib/demo";
+import { isDemoMode, DEMO_ARTICLES, DEMO_PENDING_ARTICLES } from "@/lib/demo";
 import type { Article, CreateArticleInput } from "@/lib/types";
 import { RECENT_ARTICLES_LIMIT } from "@/lib/constants";
+
+// In-memory queue for demo mode (persists for the lifetime of the dev server process)
+const demoPendingQueue: Article[] = [...DEMO_PENDING_ARTICLES];
 
 export interface GetArticlesOptions {
   q?: string;
@@ -62,6 +65,7 @@ export async function createArticle(input: CreateArticleInput, createdBy: string
       category: input.category ?? null, tags: input.tags ?? [], source: input.source ?? null,
       author: input.author ?? null, image_url: input.image_url ?? null,
       is_featured: input.is_featured ?? false, read_count: 0, ai_tags: [],
+      status: "published" as const, suggested_by_ai: false,
       created_by: createdBy, published_at: new Date().toISOString(), created_at: new Date().toISOString(),
     };
   }
@@ -77,8 +81,57 @@ export async function createArticle(input: CreateArticleInput, createdBy: string
   return data!;
 }
 
+export async function getPendingArticles(): Promise<Article[]> {
+  if (isDemoMode()) return [...demoPendingQueue];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("articles").select("*").eq("status", "pending")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Article[];
+}
+
+export async function addToPendingQueue(input: CreateArticleInput, createdBy: string): Promise<Article> {
+  const article: Article = {
+    id: `pending-${Date.now()}`,
+    title: input.title, url: input.url ?? null, content: input.content ?? null,
+    summary: input.summary ?? null, ai_summary: input.ai_summary ?? null,
+    category: input.category ?? null, tags: input.tags ?? [], source: input.source ?? null,
+    author: input.author ?? null, image_url: input.image_url ?? null,
+    is_featured: false, read_count: 0, ai_tags: [],
+    status: "pending", suggested_by_ai: input.suggested_by_ai ?? false,
+    created_by: createdBy, published_at: new Date().toISOString(), created_at: new Date().toISOString(),
+  };
+  if (isDemoMode()) {
+    demoPendingQueue.unshift(article);
+    return article;
+  }
+  const serviceClient = await createServiceClient();
+  const { data, error } = await serviceClient.from("articles").insert({
+    ...input, status: "pending", created_by: createdBy,
+  }).select().single<Article>();
+  if (error) throw new Error(error.message);
+  return data!;
+}
+
+export async function approveArticle(id: string): Promise<void> {
+  if (isDemoMode()) {
+    const idx = demoPendingQueue.findIndex(a => a.id === id);
+    if (idx >= 0) demoPendingQueue.splice(idx, 1);
+    return;
+  }
+  const serviceClient = await createServiceClient();
+  const { error } = await serviceClient
+    .from("articles").update({ status: "published" }).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 export async function deleteArticle(id: string): Promise<void> {
-  if (isDemoMode()) return;
+  if (isDemoMode()) {
+    const idx = demoPendingQueue.findIndex(a => a.id === id);
+    if (idx >= 0) demoPendingQueue.splice(idx, 1);
+    return;
+  }
   const serviceClient = await createServiceClient();
   const { error } = await serviceClient.from("articles").delete().eq("id", id);
   if (error) throw new Error(error.message);

@@ -11,6 +11,8 @@ export interface Profile {
   created_at: string;
 }
 
+export type ArticleStatus = "published" | "pending";
+
 export interface Article {
   id: string;
   title: string;
@@ -26,9 +28,20 @@ export interface Article {
   ai_tags: string[];
   is_featured: boolean;
   read_count: number;
+  status: ArticleStatus;
+  suggested_by_ai: boolean;
   created_by: string | null;
   published_at: string;
   created_at: string;
+}
+
+export interface ArticleSuggestion {
+  id: string;
+  title: string;
+  source: string;
+  category: string;
+  summary: string;
+  search_hint: string;
 }
 
 export interface MorningBrew {
@@ -66,6 +79,8 @@ export interface CreateArticleInput {
   author?: string;
   image_url?: string;
   is_featured?: boolean;
+  status?: ArticleStatus;
+  suggested_by_ai?: boolean;
 }
 
 export interface UpsertBrewInput {
