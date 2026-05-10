@@ -12,6 +12,35 @@ export const DEMO_PROFILE: Profile = {
 };
 
 export const DEMO_ARTICLES: Article[] = [
+  // ── Steve's YouTube picks ────────────────────────────────────────────────
+  {
+    id: "demo-art-vid-0000-0000-000000000001",
+    title: "Boris Chen: Claude Code and the Future of Software Engineering",
+    summary: "The inventor of Claude Code at Sequoia's AI Ascent — writes most of his code on his phone, shipped 150 PRs in a day, and believes coding is now essentially solved. Being close to the business problem is the new most valuable skill.",
+    ai_summary: "Boris Chen, creator of Claude Code, makes the provocative case that software engineering as we know it is solved — and that proximity to the business problem is becoming the most valuable skill. His live demo of shipping 150 pull requests in a single day from his phone illustrates how AI agents collapse the gap between idea and production. A must-watch for anyone building with or alongside AI.",
+    content: `Key takeaways from Boris's talk at AI Ascent:
+
+• He writes most of his code on his phone
+• Shipped 150 PRs in a single day — from his phone
+• Believes coding is "solved" and being close to the business problem is going to matter more than coding skill
+• Claude Code itself is surprisingly simple: TypeScript, React, no magic
+• As models improve, you end up stripping out features, not adding them — simplicity wins`,
+    url: "https://youtu.be/SlGRN8jh2RI",
+    image_url: "https://img.youtube.com/vi/SlGRN8jh2RI/maxresdefault.jpg",
+    category: "AI & Automation",
+    tags: ["Claude Code", "Software Engineering", "AI Agents"],
+    source: "Sequoia AI Ascent 2025",
+    author: "Boris Chen · Anthropic",
+    ai_tags: ["Developer Tools", "Future of Work", "Agentic AI"],
+    is_featured: true,
+    status: "published" as const,
+    content_type: "video" as const,
+    suggested_by_ai: false,
+    read_count: 0,
+    created_by: DEMO_USER_ID,
+    published_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+  },
   {
     id: "demo-art-0000-0000-0000-000000000001",
     title: "The AI-First Enterprise: How Leading Companies Are Restructuring for Generative AI",
@@ -165,35 +194,7 @@ For Genpact, where delivery teams span Hyderabad, Warsaw, and Guadalajara, these
     created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
   },
 
-  // ── Steve's YouTube picks ────────────────────────────────────────────────
-  {
-    id: "demo-art-vid-0000-0000-000000000001",
-    title: "Boris Chen: Claude Code and the Future of Software Engineering",
-    summary: "The inventor of Claude Code at Sequoia's AI Ascent — writes most of his code on his phone, shipped 150 PRs in a day, and believes coding is now essentially solved. Being close to the business problem is the new most valuable skill.",
-    ai_summary: "Boris Chen, creator of Claude Code, makes the provocative case that software engineering as we know it is solved — and that proximity to the business problem is becoming the most valuable skill. His live demo of shipping 150 pull requests in a single day from his phone illustrates how AI agents collapse the gap between idea and production. A must-watch for anyone building with or alongside AI.",
-    content: `Key takeaways from Boris's talk at AI Ascent:
-
-• He writes most of his code on his phone
-• Shipped 150 PRs in a single day — from his phone
-• Believes coding is "solved" and being close to the business problem is going to matter more than coding skill
-• Claude Code itself is surprisingly simple: TypeScript, React, no magic
-• As models improve, you end up stripping out features, not adding them — simplicity wins`,
-    url: "https://youtu.be/SlGRN8jh2RI",
-    image_url: "https://img.youtube.com/vi/SlGRN8jh2RI/maxresdefault.jpg",
-    category: "AI & Automation",
-    tags: ["Claude Code", "Software Engineering", "AI Agents"],
-    source: "Sequoia AI Ascent 2025",
-    author: "Boris Chen · Anthropic",
-    ai_tags: ["Developer Tools", "Future of Work", "Agentic AI"],
-    is_featured: true,
-    status: "published" as const,
-    content_type: "video" as const,
-    suggested_by_ai: false,
-    read_count: 0,
-    created_by: DEMO_USER_ID,
-    published_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-  },
+  // ── Steve's YouTube picks (continued) ───────────────────────────────────
   {
     id: "demo-art-vid-0000-0000-000000000002",
     title: "Andrej Karpathy: Recent Work and What's Next in AI",

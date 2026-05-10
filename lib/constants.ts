@@ -26,7 +26,7 @@ export const CATEGORY_COLORS: Record<Category, string> = {
 
 export const CATEGORY_COLOR_DEFAULT = "#A0A0A0";
 
-export const APP_NAME = "Knowledge Hub";
+export const APP_NAME = "Genpact Bookshelf";
 export const APP_TAGLINE = "Genpact — Empowering Learning";
 
 export const MORNING_BREW_MAX_ARTICLES = 3;
