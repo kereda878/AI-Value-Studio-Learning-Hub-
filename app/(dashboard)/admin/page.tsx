@@ -3,13 +3,12 @@ import { getServerUser } from "@/lib/auth";
 import { getProfile, getUserCount } from "@/lib/db/profiles";
 import { getArticles, getArticleCategoryCounts } from "@/lib/db/articles";
 import { getTodaysBrew } from "@/lib/db/brew";
-import AdminUploadForm from "@/components/admin/AdminUploadForm";
 import AdminBrewManager from "@/components/admin/AdminBrewManager";
 import AdminURLSubmit from "@/components/admin/AdminURLSubmit";
 import AdminSuggestPanel from "@/components/admin/AdminSuggestPanel";
 import AdminQueue from "@/components/admin/AdminQueue";
 import { StatCard } from "@/components/ui/Card";
-import { Shield, FileText, Coffee, Users, Link2, Sparkles, InboxIcon, TrendingUp } from "lucide-react";
+import { Shield, FileText, Coffee, Users, Link2, Sparkles, InboxIcon, TrendingUp, BarChart2 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { isDemoMode } from "@/lib/demo";
@@ -89,60 +88,63 @@ export default async function AdminPage() {
         <AdminQueue />
       </section>
 
-      {/* ── Row 3: Upload + Brew Manager ── */}
-      <div className="grid lg:grid-cols-2 gap-8 mb-8">
-        <section>
-          <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
-            <FileText size={15} className="text-[#F45B69]" /> Manual Upload
-          </h2>
-          <AdminUploadForm />
-        </section>
-        <section>
-          <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
-            <Coffee size={15} className="text-[#D4956A]" /> Morning Brew
-          </h2>
-          <AdminBrewManager articles={articles} existingBrew={brew ?? null} />
-        </section>
-      </div>
+      {/* ── Row 3: Morning Brew ── */}
+      <section className="mb-8">
+        <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
+          <Coffee size={15} className="text-[#D4956A]" /> Morning Brew
+        </h2>
+        <AdminBrewManager articles={articles} existingBrew={brew ?? null} />
+      </section>
 
-      {/* ── Row 4: Recent Articles Table ── */}
+      {/* ── Row 4: Engagement Table ── */}
       <section>
         <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
-          <TrendingUp size={15} className="text-[#A0A0A0]" /> Published Articles
+          <BarChart2 size={15} className="text-[#7EA3CC]" /> Engagement
+          <span className="text-[#4A4A4A] text-xs font-normal ml-1">— sorted by reads</span>
         </h2>
         <div className="bg-[#141414] rounded-2xl border border-white/[0.06] overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/[0.05]">
-                {["Title", "Category", "Date", "Reads"].map((h, i) => (
-                  <th
-                    key={h}
-                    className={`text-left text-[#5A5A5A] text-xs font-medium px-4 py-3 uppercase tracking-wider ${i > 0 && i < 3 ? "hidden md:table-cell" : ""} ${i === 3 ? "text-right" : ""}`}
-                  >
-                    {h}
-                  </th>
-                ))}
+                <th className="text-left text-[#5A5A5A] text-xs font-medium px-4 py-3 uppercase tracking-wider">Title</th>
+                <th className="text-left text-[#5A5A5A] text-xs font-medium px-4 py-3 uppercase tracking-wider hidden md:table-cell">Category</th>
+                <th className="text-left text-[#5A5A5A] text-xs font-medium px-4 py-3 uppercase tracking-wider hidden md:table-cell">Published</th>
+                <th className="text-right text-[#5A5A5A] text-xs font-medium px-4 py-3 uppercase tracking-wider w-48">Reads</th>
               </tr>
             </thead>
             <tbody>
-              {articles.map(article => (
-                <tr key={article.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
-                  <td className="px-4 py-3">
-                    <Link href={`/articles/${article.id}`} className="text-[#D0D0D0] hover:text-[#F45B69] transition-colors line-clamp-1 text-sm">
-                      {article.title}
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    <span className="text-[#6A6A6A] text-xs">{article.category ?? "—"}</span>
-                  </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    <span className="text-[#4A4A4A] text-xs">{format(new Date(article.published_at), "MMM d, yyyy")}</span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <span className="text-[#4A4A4A] text-xs">{article.read_count}</span>
-                  </td>
-                </tr>
-              ))}
+              {[...articles].sort((a, b) => (b.read_count ?? 0) - (a.read_count ?? 0)).map((article, _, sorted) => {
+                const max = sorted[0]?.read_count ?? 1;
+                const pct = max > 0 ? Math.round(((article.read_count ?? 0) / max) * 100) : 0;
+                return (
+                  <tr key={article.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors">
+                    <td className="px-4 py-3">
+                      <Link href={`/articles/${article.id}`} className="text-[#D0D0D0] hover:text-[#F45B69] transition-colors line-clamp-1 text-sm">
+                        {article.title}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      <span className="text-[#6A6A6A] text-xs">{article.category ?? "—"}</span>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      <span className="text-[#4A4A4A] text-xs">{format(new Date(article.published_at), "MMM d")}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2 justify-end">
+                        <div className="w-24 h-1.5 rounded-full bg-white/[0.05] overflow-hidden hidden md:block">
+                          <div
+                            className="h-full rounded-full bg-[#7EA3CC] transition-all"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className={`text-xs tabular-nums min-w-[2rem] text-right ${(article.read_count ?? 0) > 0 ? "text-[#A0A0A0]" : "text-[#3A3A3A]"}`}>
+                          {article.read_count ?? 0}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {articles.length === 0 && (
