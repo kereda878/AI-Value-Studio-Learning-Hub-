@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { BookOpen, Search, LogOut, Menu, X, Shield } from "lucide-react";
+import { BookOpen, Search, LogOut, Menu, X, Shield, Settings } from "lucide-react";
 import { APP_NAME } from "@/lib/constants";
 import type { Profile } from "@/lib/types";
 
@@ -23,6 +23,7 @@ export default function Header({ profile }: { profile: Profile | null }) {
     { href: "/", label: "Morning Brew" },
     { href: "/articles", label: "Library" },
     ...(isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
+    { href: "/settings", label: "Settings" },
   ];
 
   async function signOut() {
@@ -67,6 +68,7 @@ export default function Header({ profile }: { profile: Profile | null }) {
                   }`}
                 >
                   {link.href === "/admin" && <Shield size={12} className="text-[#D4956A]" />}
+                  {link.href === "/settings" && <Settings size={12} className="text-[#A0A0A0]" />}
                   {link.label}
                   {active && (
                     <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[#F45B69] rounded-full" />
@@ -134,6 +136,7 @@ export default function Header({ profile }: { profile: Profile | null }) {
                 }`}
               >
                 {link.href === "/admin" && <Shield size={12} className="text-[#D4956A]" />}
+                {link.href === "/settings" && <Settings size={12} className="text-[#A0A0A0]" />}
                 {link.label}
               </Link>
             ))}

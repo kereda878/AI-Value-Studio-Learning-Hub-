@@ -111,6 +111,34 @@ CREATE POLICY "Users manage own saves" ON public.user_saves FOR ALL USING (auth.
 -- Seed sample categories (informational — not a table constraint)
 -- Categories: AI & Automation, Leadership, Finance, Operations, Technology, Strategy, People & Culture
 
+-- Notification preferences (opt-in email digest)
+CREATE TABLE IF NOT EXISTS public.notification_prefs (
+  user_id       UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  daily_email   BOOLEAN NOT NULL DEFAULT TRUE,
+  delivery_hour INT NOT NULL DEFAULT 8 CHECK (delivery_hour BETWEEN 0 AND 23),
+  tz            TEXT NOT NULL DEFAULT 'America/New_York',
+  updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.notification_prefs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users manage own prefs"         ON public.notification_prefs FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Service role manages all prefs" ON public.notification_prefs FOR ALL USING (auth.role() = 'service_role');
+
+-- Digest send log (open/click tracking per user per brew date)
+CREATE TABLE IF NOT EXISTS public.digest_sends (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  brew_date  DATE NOT NULL,
+  sent_at    TIMESTAMPTZ DEFAULT NOW(),
+  opened_at  TIMESTAMPTZ,
+  clicked    JSONB DEFAULT '{}',
+  UNIQUE (user_id, brew_date)
+);
+
+ALTER TABLE public.digest_sends ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users read own sends"           ON public.digest_sends FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Service role manages all sends" ON public.digest_sends FOR ALL USING (auth.role() = 'service_role');
+
 -- ============================================================
 -- To make yourself an admin after signing up, run:
 -- UPDATE public.profiles SET role = 'admin' WHERE email = 'your@email.com';

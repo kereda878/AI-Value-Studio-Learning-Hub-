@@ -68,6 +68,14 @@ export interface UserSave {
   saved_at: string;
 }
 
+export interface NotificationPrefs {
+  user_id: string;
+  daily_email: boolean;
+  delivery_hour: number; // 0-23 local hour
+  tz: string;
+  updated_at?: string;
+}
+
 // Input shapes for creating/updating records
 export interface CreateArticleInput {
   title: string;
