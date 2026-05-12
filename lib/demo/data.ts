@@ -15,9 +15,9 @@ export const DEMO_ARTICLES: Article[] = [
   // ── Steve's YouTube picks ────────────────────────────────────────────────
   {
     id: "demo-art-vid-0000-0000-000000000001",
-    title: "Boris Chen: Claude Code and the Future of Software Engineering",
+    title: "Boris Cherny: Claude Code and the Future of Software Engineering",
     summary: "The inventor of Claude Code at Sequoia's AI Ascent — writes most of his code on his phone, shipped 150 PRs in a day, and believes coding is now essentially solved. Being close to the business problem is the new most valuable skill.",
-    ai_summary: "Boris Chen, creator of Claude Code, makes the provocative case that software engineering as we know it is solved — and that proximity to the business problem is becoming the most valuable skill. His live demo of shipping 150 pull requests in a single day from his phone illustrates how AI agents collapse the gap between idea and production. A must-watch for anyone building with or alongside AI.",
+    ai_summary: "Boris Cherny, creator of Claude Code, makes the provocative case that software engineering as we know it is solved — and that proximity to the business problem is becoming the most valuable skill. His live demo of shipping 150 pull requests in a single day from his phone illustrates how AI agents collapse the gap between idea and production. A must-watch for anyone building with or alongside AI.",
     content: `Key takeaways from Boris's talk at AI Ascent:
 
 • He writes most of his code on his phone
@@ -30,7 +30,7 @@ export const DEMO_ARTICLES: Article[] = [
     category: "AI & Automation",
     tags: ["Claude Code", "Software Engineering", "AI Agents"],
     source: "Sequoia AI Ascent 2025",
-    author: "Boris Chen · Anthropic",
+    author: "Boris Cherny · Anthropic",
     ai_tags: ["Developer Tools", "Future of Work", "Agentic AI"],
     is_featured: true,
     status: "published" as const,

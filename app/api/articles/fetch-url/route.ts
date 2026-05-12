@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       const res = await fetch(url, {
         headers: {
           "User-Agent":
-            "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+            "Genpact-Bookshelf/1.0 (+https://github.com/kereda878/Genpact-Bookshelf)",
           Accept: "text/html,application/xhtml+xml",
         },
         signal: AbortSignal.timeout(8000),
